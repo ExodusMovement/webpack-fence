@@ -4,7 +4,7 @@ const path = require('path')
 const inPath = (file, prefix) => file === prefix || file.startsWith(path.join(prefix, './'))
 
 function validate(data, options) {
-  assert(data.resource === data.userRequest)
+  // Note: data.userRequest is different and can contain loader prefixes
   assert(data.resource === data.resourceResolveData.path)
   const filePath = path.resolve(data.resource) // resolve just in case, don't remove
   const moduleName = data.resourceResolveData.descriptionFileData.name

@@ -8,7 +8,7 @@ function validate(data, options) {
   assert(data.resource === data.resourceResolveData.path)
   const filePath = path.resolve(data.resource) // resolve just in case, don't remove
   const moduleName = data.resourceResolveData.descriptionFileData.name
-  const modilePackage = data.resourceResolveData.descriptionFilePath
+  const modulePackage = data.resourceResolveData.descriptionFilePath
 
   if (options.validModules) {
     const valid = options.validModules.includes(moduleName)
@@ -32,7 +32,7 @@ function validate(data, options) {
   }
 
   if (options.validate) {
-    const valid = options.validate({ filePath, moduleName, modilePackage })
+    const valid = options.validate({ filePath, moduleName, modulePackage })
     assert(valid, `[fencing] validate: ${filePath}`)
   }
 }

@@ -1,0 +1,21 @@
+{
+  "name": "@exodus/webpack-fence",
+  "version": "unreleased",
+  "description": "Fence webpack imports during build",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ExodusMovement/webpack-fence.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ExodusMovement/webpack-fence/issues"
+  },
+  "homepage": "https://github.com/ExodusMovement/webpack-fence#readme"
+}

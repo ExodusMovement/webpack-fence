@@ -37,19 +37,64 @@ function validate(data, options) {
   }
 }
 
+function commonPath(one, two) {
+  const a = one.split(path.sep)
+  const b = two.split(path.sep)
+  const common = []
+  for (let i = 0; i < a.length && i < b.length && a[i] === b[i]; i++) common.push(a[i])
+  return common.join(path.sep)
+}
+
+function getTrace(request, history) {
+  // Rebuild the trace metadata
+  const trace = []
+  let root
+  const seen = new Set() // require loop prevention
+  for (let curr = request; history.has(curr); curr = history.get(curr).source) {
+    if (seen.has(curr)) break
+    seen.add(curr)
+    const entry = history.get(curr)
+    trace.push(entry)
+    root = root !== undefined ? commonPath(root, curr) : curr // find minimal root
+  }
+
+  const relative = (location) => {
+    assert(location.startsWith(`${root}${path.sep}`))
+    return root ? `.${location.slice(root.length)}` : location
+  }
+
+  // Convert to human-readable form
+  const lines = []
+  const { stringify } = JSON
+  for (const { resource, source, query } of trace) {
+    const origin = source ? ` (as ${stringify(query)} from ${stringify(relative(source))})` : ''
+    lines.push(`  * ${stringify(relative(resource))}${origin}`)
+  }
+  lines.push(`  * in ${stringify(root)}`)
+  return lines.join('\n')
+}
+
 // Webpack plugin interface
 class WebpackFencePlugin {
   constructor(options = {}) {
     this.options = options
   }
   apply(compiler) {
+    const history = new Map()
     compiler.plugin('normal-module-factory', (nmf) => {
       nmf.plugin('after-resolve', (data, callback) => {
+        if (!history.get(data.resource)) {
+          history.set(data.resource, {
+            resource: data.resource,
+            source: data.resourceResolveData.context.issuer,
+            query: data.rawRequest,
+          })
+        }
         try {
           validate(data, this.options)
         } catch (err) {
           if (this.options.debug) console.error(data)
-          throw err
+          throw new Error(`${err.message}\n${getTrace(data.resource, history)}`)
         }
         return callback(null, data)
       })

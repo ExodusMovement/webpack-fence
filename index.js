@@ -74,10 +74,40 @@ function getTrace(request, history) {
   return lines.join('\n')
 }
 
+function processPaths(options) {
+  const { rootPath, validPaths, invalidPaths, validModules, invalidModules, ...rest } = options
+  const restKeys = Object.keys(rest)
+  assert(restKeys.length === 0, `Unrecognized options: ${JSON.stringify(restKeys)}`)
+
+  assert(rootPath === undefined || rootPath === null || rootPath && typeof rootPath === 'string')
+  for (const opt of [validPaths, invalidPaths, validModules, invalidModules]) {
+    assert(opt === undefined || opt === null || Array.isArray(opt))
+  }
+
+  if (rootPath) assert(path.resolve(rootPath) === rootPath) // ensure rootPath is fully resolved
+  const resolvePath = (dir) => {
+    if (!rootPath) {
+      assert(path.resolve(dir) === dir) // ensure all paths are passed in fully resolved
+      return dir
+    }
+    const result = path.resolve(rootPath, dir)
+    // ensure all paths are in ${rootPath}
+    assert(result.startsWith(`${rootPath}${path.sep}`) || result === rootPath)
+    return result
+  }
+
+  return {
+    validPaths: validPaths ? validPaths.map(resolvePath) : (rootPath ? [rootPath] : null),
+    invalidPaths: invalidPaths ? invalidPaths.map(resolvePath) : null,
+    validModules,
+    invalidModules,
+  }
+}
+
 // Webpack plugin interface
 class WebpackFencePlugin {
   constructor(options = {}) {
-    this.options = options
+    this.options = processPaths(options)
   }
   apply(compiler) {
     const history = new Map()

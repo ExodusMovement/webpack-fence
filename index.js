@@ -79,7 +79,7 @@ function processPaths(options) {
   const restKeys = Object.keys(rest)
   assert(restKeys.length === 0, `Unrecognized options: ${JSON.stringify(restKeys)}`)
 
-  assert(rootPath === undefined || rootPath === null || rootPath && typeof rootPath === 'string')
+  assert(rootPath === undefined || rootPath === null || (rootPath && typeof rootPath === 'string'))
   for (const opt of [validPaths, invalidPaths, validModules, invalidModules]) {
     assert(opt === undefined || opt === null || Array.isArray(opt))
   }
@@ -97,7 +97,7 @@ function processPaths(options) {
   }
 
   return {
-    validPaths: validPaths ? validPaths.map(resolvePath) : (rootPath ? [rootPath] : null),
+    validPaths: validPaths ? validPaths.map(resolvePath) : rootPath ? [rootPath] : null,
     invalidPaths: invalidPaths ? invalidPaths.map(resolvePath) : null,
     validModules,
     invalidModules,

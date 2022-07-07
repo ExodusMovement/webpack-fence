@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/ExodusMovement/webpack-fence/issues"
   },
-  "homepage": "https://github.com/ExodusMovement/webpack-fence#readme"
+  "homepage": "https://github.com/ExodusMovement/webpack-fence#readme",
+  "devDependencies": {
+    "prettier": "^2.7.1"
+  }
 }

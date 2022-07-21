@@ -3,7 +3,7 @@ const path = require('path')
 
 const inPath = (file, prefix) => file === prefix || file.startsWith(path.join(prefix, './'))
 
-function validate(data, options) {
+function validateData(data, options) {
   // Note: data.userRequest is different and can contain loader prefixes
   assert(data.resource === data.resourceResolveData.path)
   const filePath = path.resolve(data.resource) // resolve just in case, don't remove
@@ -75,7 +75,8 @@ function getTrace(request, history) {
 }
 
 function processPaths(options) {
-  const { rootPath, validPaths, invalidPaths, validModules, invalidModules, ...rest } = options
+  const { rootPath, validPaths, invalidPaths, validModules, invalidModules, validate, ...rest } =
+    options
   const restKeys = Object.keys(rest)
   assert(restKeys.length === 0, `Unrecognized options: ${JSON.stringify(restKeys)}`)
 
@@ -101,6 +102,7 @@ function processPaths(options) {
     invalidPaths: invalidPaths ? invalidPaths.map(resolvePath) : null,
     validModules,
     invalidModules,
+    validate,
   }
 }
 
@@ -121,7 +123,7 @@ class WebpackFencePlugin {
           })
         }
         try {
-          validate(data, this.options)
+          validateData(data, this.options)
         } catch (err) {
           if (this.options.debug) console.error(data)
           throw new Error(`${err.message}\n${getTrace(data.resource, history)}`)

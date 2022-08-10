@@ -1,6 +1,6 @@
 {
   "name": "@exodus/webpack-fence",
-  "version": "1.0.0-rc.2",
+  "version": "1.0.0-rc.3",
   "description": "Fence webpack imports during build",
   "main": "index.js",
   "files": [

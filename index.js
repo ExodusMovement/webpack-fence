@@ -55,12 +55,13 @@ function getTrace(request, history) {
     seen.add(curr)
     const entry = history.get(curr)
     trace.push(entry)
-    root = root !== undefined ? commonPath(root, curr) : curr // find minimal root
+    root = root !== undefined ? commonPath(root, curr) : path.dirname(curr) // find minimal root
   }
 
   const relative = (location) => {
+    if (!root) return location
     assert(location.startsWith(`${root}${path.sep}`))
-    return root ? `.${location.slice(root.length)}` : location
+    return `.${location.slice(root.length)}`
   }
 
   // Convert to human-readable form

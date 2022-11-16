@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/ExodusMovement/webpack-fence.git"
   },
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ExodusMovement/webpack-fence/issues"
   },

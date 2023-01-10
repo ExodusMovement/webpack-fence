@@ -3,7 +3,13 @@
   "version": "1.0.0-rc.3",
   "description": "Fence webpack imports during build",
   "main": "index.js",
+  "exports": {
+    "./WebpackFenceAuditPlugin": "./WebpackFenceAuditPlugin.js",
+    "./WebpackFencePlugin": "./index.js",
+    ".": "./index.js"
+  },
   "files": [
+    "WebpackFenceAuditPlugin",
     "index.js"
   ],
   "scripts": {
